@@ -3,6 +3,8 @@ package com.juan.curso.springboot.webapp.gestorcamarafrigorifica.controladores;
 import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.Cliente;
 import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.servicios.ClienteServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,14 +17,31 @@ public class ClienteController {
     private ClienteServiceImpl clienteService;
 
     @GetMapping
-    public List<Cliente> getAll() { return clienteService.findAll(); }
+    public List<Cliente> getAll() {
+        return clienteService.findAll();
+    }
 
     @GetMapping("/{id}")
-    public Optional<Cliente> getById(@PathVariable Integer id) { return clienteService.findById(id); }
+    public ResponseEntity<Cliente> getById(@PathVariable Integer id) {
+        Optional<Cliente> cliente = clienteService.findById(id);
+        if (cliente.isPresent()) {
+            return ResponseEntity.ok(cliente.orElseThrow());
+        }
+        return ResponseEntity.notFound().build();
+    }
 
     @PostMapping
-    public Cliente create(@RequestBody Cliente cliente) { return clienteService.save(cliente); }
+    public ResponseEntity<Cliente> create(@RequestBody Cliente cliente) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(clienteService.save(cliente));
+    }
+
+    @PutMapping
+    public ResponseEntity<Cliente> update(@RequestBody Cliente cliente) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(clienteService.save(cliente));
+    }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id) { clienteService.deleteById(id); }
+    public void delete(@PathVariable Integer id) {
+        clienteService.deleteById(id);
+    }
 }
