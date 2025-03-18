@@ -8,10 +8,12 @@ import java.util.Optional;
 public interface FacturaService {
     List<Factura> findAll();
 
-    Factura save(Factura factura);
-
     Optional<Factura> findById(Integer id);
 
-    void deleteById(Integer id);
+    Factura save(Factura factura);
+
+    Optional<Factura> update(Integer id, Factura factura);
+
+    Optional<Factura> deleteById(Integer id);
 
 }

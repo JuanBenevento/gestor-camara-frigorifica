@@ -13,6 +13,8 @@ public interface CamaraService {
 
     Camara save(Camara camara);
 
-    void deleteById(Integer id);
+    Optional<Camara> update(Integer id, Camara camara);
+
+    Optional<Camara> deleteById(Integer id);
 
 }

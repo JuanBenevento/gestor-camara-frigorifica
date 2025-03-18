@@ -1,6 +1,8 @@
 package com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Data
@@ -12,9 +14,13 @@ public class Camara {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idCamara;
+    @NotEmpty
     private String nombre;
+    @NotNull
     private Double temperatura;
+    @NotNull
     private Double capacidad;
+    @NotEmpty
     private String ubicacion;
 
     public Integer getIdCamara() {

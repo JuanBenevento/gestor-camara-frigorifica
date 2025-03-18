@@ -33,9 +33,27 @@ public class MovimientoServiceImpl implements MovimientoService {
         return movimientoRepository.save(movimiento);
     }
 
+    @Override
+    public Optional<Movimiento> update(Integer id, Movimiento movimiento) {
+        Optional<Movimiento> movimientoOptional = movimientoRepository.findById(id);
+        if (movimientoOptional.isPresent()) {
+            Movimiento movimientoDb = movimientoOptional.orElseThrow();
+            movimientoDb.setTipo(movimiento.getTipo());
+            movimientoDb.setFecha(movimiento.getFecha());
+            movimientoDb.setDestino(movimiento.getDestino());
+            movimientoDb.setPale(movimiento.getPale());
+            return Optional.of(movimientoRepository.save(movimientoDb));
+        }
+        return movimientoOptional;
+    }
+
     @Transactional
     @Override
-    public void deleteById(Integer id) {
-        movimientoRepository.deleteById(id);
+    public Optional<Movimiento> deleteById(Integer id) {
+        Optional<Movimiento> movimientoOptional = movimientoRepository.findById(id);
+        movimientoOptional.ifPresent(movimientoDb -> {
+            movimientoRepository.delete(movimientoDb);
+        });
+        return movimientoOptional;
     }
 }

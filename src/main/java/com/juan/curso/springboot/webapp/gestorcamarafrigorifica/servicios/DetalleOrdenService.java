@@ -1,5 +1,6 @@
 package com.juan.curso.springboot.webapp.gestorcamarafrigorifica.servicios;
 
+import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.Camara;
 import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.DetalleOrden;
 
 import java.util.List;
@@ -12,5 +13,7 @@ public interface DetalleOrdenService {
 
     DetalleOrden save(DetalleOrden detalleOrden);
 
-    void deleteById(Integer id);
+    Optional<DetalleOrden> update(Integer id, DetalleOrden detalleOrden);
+
+    Optional<DetalleOrden> deleteById(Integer id);
 }

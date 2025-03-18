@@ -33,9 +33,26 @@ public class PaleServiceImpl implements PaleService {
         return paleRepository.save(pale);
     }
 
+    @Override
+    public Optional<Pale> update(Integer id, Pale pale) {
+        Optional<Pale> paleOptional = paleRepository.findById(id);
+        if (paleOptional.isPresent()) {
+            Pale paleDb = paleOptional.orElseThrow();
+            paleDb.setCamara(pale.getCamara());
+            paleDb.setCodigo(pale.getCodigo());
+            paleDb.setCapacidad(pale.getCapacidad());
+            return Optional.of(paleRepository.save(paleDb));
+        }
+        return paleOptional;
+    }
+
     @Transactional
     @Override
-    public void deleteById(Integer id) {
-        paleRepository.deleteById(id);
+    public Optional<Pale> deleteById(Integer id) {
+        Optional<Pale> paleOptional = paleRepository.findById(id);
+        paleOptional.ifPresent(paleDb -> {
+            paleRepository.delete(paleDb);
+        });
+        return paleOptional;
     }
 }

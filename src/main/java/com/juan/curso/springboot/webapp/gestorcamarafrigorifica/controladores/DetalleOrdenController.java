@@ -4,6 +4,7 @@ package com.juan.curso.springboot.webapp.gestorcamarafrigorifica.controladores;
 
 import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.DetalleOrden;
 import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.servicios.DetalleOrdenServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,12 +39,22 @@ public class DetalleOrdenController {
         return ResponseEntity.status(HttpStatus.CREATED).body(detalleOrdenService.save(detalleOrden));
     }
 
-    @PutMapping
-    public ResponseEntity<DetalleOrden> update(@RequestBody DetalleOrden detalleOrden) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(detalleOrdenService.save(detalleOrden));
+    @PutMapping("/{id}")
+    public ResponseEntity<DetalleOrden> update(@PathVariable Integer id, @Valid @RequestBody DetalleOrden detalleOrden) {
+        Optional<DetalleOrden> detalleOrdenOptional = detalleOrdenService.update(id, detalleOrden);
+        if (detalleOrdenOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(detalleOrdenOptional.orElseThrow());
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable Integer id) { detalleOrdenService.deleteById(id); }
+    public ResponseEntity<?> delete(@PathVariable Integer id) {
+        Optional<DetalleOrden> detalleOrdenOptional = detalleOrdenService.deleteById(id);
+        if (detalleOrdenOptional.isPresent()) {
+            return ResponseEntity.ok(detalleOrdenOptional.orElseThrow());
+        }
+        return ResponseEntity.notFound().build();
+    }
 
 }

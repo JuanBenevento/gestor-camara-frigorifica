@@ -32,9 +32,27 @@ public class UsuarioServiceImpl implements UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
+    @Override
+    public Optional<Usuario> update(Integer id, Usuario usuario) {
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
+        if (usuarioOptional.isPresent()) {
+            Usuario usuarioDb = usuarioOptional.orElseThrow();
+            usuarioDb.setNombre(usuario.getNombre());
+            usuarioDb.setRol(usuario.getRol());
+            usuarioDb.setEmail(usuario.getEmail());
+            usuarioDb.setPassword(usuario.getPassword());
+            return Optional.of(usuarioRepository.save(usuarioDb));
+        }
+        return usuarioOptional;
+    }
+
     @Transactional
     @Override
-    public void deleteById(Integer id) {
-        usuarioRepository.deleteById(id);
+    public Optional<Usuario> deleteById(Integer id) {
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
+        usuarioOptional.ifPresent(usuarioDb -> {
+            usuarioRepository.delete(usuarioDb);
+        });
+        return usuarioOptional;
     }
 }

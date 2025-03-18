@@ -1,5 +1,6 @@
 package com.juan.curso.springboot.webapp.gestorcamarafrigorifica.servicios;
 
+import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.Camara;
 import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.DetalleOrden;
 import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.repositorios.DetalleOrdenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +34,26 @@ public class DetalleOrdenServiceImpl implements DetalleOrdenService {
         return detalleOrdenRepository.save(detalleOrden);
     }
 
+    @Override
+    public Optional<DetalleOrden> update(Integer id, DetalleOrden detalleOrden) {
+        Optional<DetalleOrden> detalleOrdenOptional = detalleOrdenRepository.findById(id);
+        if (detalleOrdenOptional.isPresent()) {
+            DetalleOrden detalleOrdenDb = detalleOrdenOptional.orElseThrow();
+            detalleOrdenDb.setOrdenCarga(detalleOrden.getOrdenCarga());
+            detalleOrdenDb.setProducto(detalleOrden.getProducto());
+            detalleOrdenDb.setCantidad(detalleOrden.getCantidad());
+            return Optional.of(detalleOrdenRepository.save(detalleOrdenDb));
+        }
+        return detalleOrdenOptional;
+    }
+
     @Transactional
     @Override
-    public void deleteById(Integer id) {
-        detalleOrdenRepository.deleteById(id);
+    public Optional<DetalleOrden> deleteById(Integer id) {
+        Optional<DetalleOrden> detalleOrdenOptional = detalleOrdenRepository.findById(id);
+        detalleOrdenOptional.ifPresent(detalleOrdenDb -> {
+            detalleOrdenRepository.delete(detalleOrdenDb);
+        });
+        return detalleOrdenOptional;
     }
 }

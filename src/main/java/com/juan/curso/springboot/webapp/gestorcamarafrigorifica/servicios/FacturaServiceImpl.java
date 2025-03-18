@@ -23,19 +23,38 @@ public class FacturaServiceImpl implements FacturaService{
 
     @Transactional(readOnly = true)
     @Override
-    public Factura save(Factura factura) {
-        return facturaRepository.save(factura);
-    }
-
-    @Transactional
-    @Override
     public Optional<Factura> findById(Integer id) {
         return facturaRepository.findById(id);
     }
 
     @Transactional
     @Override
-    public void deleteById(Integer id) {
-        facturaRepository.deleteById(id);
+    public Factura save(Factura factura) {
+        return facturaRepository.save(factura);
+    }
+
+
+    @Override
+    public Optional<Factura> update(Integer id, Factura factura) {
+        Optional<Factura> facturaOptional = facturaRepository.findById(id);
+        if (facturaOptional.isPresent()) {
+            Factura facturaDb = facturaOptional.orElseThrow();
+            facturaDb.setCliente(factura.getCliente());
+            facturaDb.setFecha(factura.getFecha());
+            facturaDb.setTotal(factura.getTotal());
+            facturaDb.setConcepto(factura.getConcepto());
+            return Optional.of(facturaRepository.save(facturaDb));
+        }
+        return facturaOptional;
+    }
+
+    @Transactional
+    @Override
+    public Optional<Factura> deleteById(Integer id) {
+        Optional<Factura> facturaOptional = facturaRepository.findById(id);
+        facturaOptional.ifPresent(facturaDb -> {
+            facturaRepository.delete(facturaDb);
+        });
+        return facturaOptional;
     }
 }

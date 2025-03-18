@@ -1,7 +1,9 @@
 package com.juan.curso.springboot.webapp.gestorcamarafrigorifica.controladores;
 
+import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.Cliente;
 import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.Factura;
 import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.servicios.FacturaServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,10 +36,22 @@ public class FacturaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Factura> update(@PathVariable Integer id, @RequestBody Factura factura) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(facturaService.save(factura));
+    public ResponseEntity<Factura> update(@PathVariable Integer id, @Valid @RequestBody Factura factura) {
+        Optional<Factura> facturaOptional = facturaService.update(id, factura);
+        if (facturaOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(facturaOptional.orElseThrow());
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id) { facturaService.deleteById(id); }
+    public ResponseEntity<?> delete(@PathVariable Integer id) {
+        Optional<Factura> facturaOptional = facturaService.deleteById(id);
+        if (facturaOptional.isPresent()) {
+            return ResponseEntity.ok(facturaOptional.orElseThrow());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+
 }

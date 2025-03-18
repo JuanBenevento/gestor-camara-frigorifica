@@ -33,9 +33,25 @@ public class OrdenCargaServiceImpl implements OrdenCargaService {
         return ordenCargaRepository.save(ordenCarga);
     }
 
+    @Override
+    public Optional<OrdenCarga> update(Integer id, OrdenCarga ordenCarga) {
+        Optional<OrdenCarga> ordenCargaOptional = ordenCargaRepository.findById(id);
+        if (ordenCargaOptional.isPresent()) {
+            OrdenCarga ordenCargaDb = ordenCargaOptional.orElseThrow();
+            ordenCargaDb.setFecha(ordenCarga.getFecha());
+            ordenCargaDb.setEstado(ordenCarga.getEstado());
+            return Optional.of(ordenCargaRepository.save(ordenCargaDb));
+        }
+        return ordenCargaOptional;
+    }
+
     @Transactional
     @Override
-    public void deleteById(Integer id) {
-        ordenCargaRepository.deleteById(id);
+    public Optional<OrdenCarga> deleteById(Integer id) {
+        Optional<OrdenCarga> ordenCargaOptional = ordenCargaRepository.findById(id);
+        ordenCargaOptional.ifPresent(facturaDb -> {
+            ordenCargaRepository.delete(facturaDb);
+        });
+        return ordenCargaOptional;
     }
 }

@@ -1,5 +1,6 @@
 package com.juan.curso.springboot.webapp.gestorcamarafrigorifica.servicios;
 
+import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.Cliente;
 import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.Movimiento;
 
 import java.util.List;
@@ -12,5 +13,7 @@ public interface MovimientoService {
 
     Movimiento save(Movimiento movimiento);
 
-    void deleteById(Integer id);
+    Optional<Movimiento> update(Integer id, Movimiento movimiento);
+
+    Optional<Movimiento> deleteById(Integer id);
 }

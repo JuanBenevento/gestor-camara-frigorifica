@@ -1,5 +1,6 @@
 package com.juan.curso.springboot.webapp.gestorcamarafrigorifica.servicios;
 
+import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.Camara;
 import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.Cliente;
 
 import java.util.List;
@@ -13,6 +14,8 @@ public interface ClienteService {
 
     Cliente save(Cliente cliente);
 
-    void deleteById(Integer id);
+    Optional<Cliente> update(Integer id, Cliente cliente);
+
+    Optional<Cliente> deleteById(Integer id);
 
 }

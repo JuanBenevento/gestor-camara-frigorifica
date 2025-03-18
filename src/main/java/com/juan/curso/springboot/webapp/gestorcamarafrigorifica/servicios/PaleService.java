@@ -1,5 +1,6 @@
 package com.juan.curso.springboot.webapp.gestorcamarafrigorifica.servicios;
 
+import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.Cliente;
 import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.Pale;
 
 import java.util.List;
@@ -12,5 +13,7 @@ public interface PaleService {
 
     Pale save(Pale pale);
 
-    void deleteById(Integer id);
+    Optional<Pale> update(Integer id, Pale pale);
+
+    Optional<Pale> deleteById(Integer id);
 }

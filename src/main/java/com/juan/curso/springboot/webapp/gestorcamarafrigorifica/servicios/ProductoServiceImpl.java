@@ -34,9 +34,29 @@ public class ProductoServiceImpl implements ProductoService {
         return productoRepository.save(producto);
     }
 
+    @Override
+    public Optional<Producto> update(Integer id, Producto producto) {
+        Optional<Producto> productoOptional = productoRepository.findById(id);
+        if (productoOptional.isPresent()) {
+            Producto productoDb = productoOptional.orElseThrow();
+            productoDb.setNombre(producto.getNombre());
+            productoDb.setTipo(producto.getTipo());
+            productoDb.setPeso(producto.getPeso());
+            productoDb.setFechaIngreso(producto.getFechaIngreso());
+            productoDb.setLote(producto.getLote());
+            productoDb.setEstado(producto.getEstado());
+            return Optional.of(productoRepository.save(productoDb));
+        }
+        return productoOptional;
+    }
+
     @Transactional
     @Override
-    public void deleteById(Integer id) {
-        productoRepository.deleteById(id);
+    public Optional<Producto> deleteById(Integer id) {
+        Optional<Producto> productoOptional = productoRepository.findById(id);
+        productoOptional.ifPresent(productoDb -> {
+            productoRepository.delete(productoDb);
+        });
+        return productoOptional;
     }
 }

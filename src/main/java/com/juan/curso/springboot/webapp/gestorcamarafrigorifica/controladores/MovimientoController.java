@@ -1,7 +1,9 @@
 package com.juan.curso.springboot.webapp.gestorcamarafrigorifica.controladores;
 
+import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.Factura;
 import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.Movimiento;
 import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.servicios.MovimientoServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,9 +36,21 @@ public class MovimientoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Movimiento> update(@PathVariable Integer id, @RequestBody Movimiento movimiento) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(movimientoService.save(movimiento));
+    public ResponseEntity<?> update(@PathVariable Integer id, @Valid @RequestBody Movimiento movimiento) {
+        Optional<Movimiento> movimientoOptional = movimientoService.update(id, movimiento);
+        if (movimientoOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(movimientoOptional.orElseThrow());
+        }
+        return ResponseEntity.notFound().build();
     }
+
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id) { movimientoService.deleteById(id); }
+    public ResponseEntity<?> delete(@PathVariable Integer id) {
+        Optional<Movimiento> movimientoOptional = movimientoService.deleteById(id);
+        if (movimientoOptional.isPresent()) {
+            return ResponseEntity.ok(movimientoOptional.orElseThrow());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
 }

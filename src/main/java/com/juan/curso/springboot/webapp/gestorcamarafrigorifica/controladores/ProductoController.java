@@ -2,6 +2,7 @@ package com.juan.curso.springboot.webapp.gestorcamarafrigorifica.controladores;
 
 import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.Producto;
 import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.servicios.ProductoServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,9 +35,20 @@ public class ProductoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Producto> update(@PathVariable Integer id, @RequestBody Producto producto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(productoService.save(producto));
+    public ResponseEntity<Producto> update(@PathVariable Integer id, @Valid @RequestBody Producto producto) {
+        Optional<Producto> facturaOptional = productoService.update(id, producto);
+        if (facturaOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(facturaOptional.orElseThrow());
+        }
+        return ResponseEntity.notFound().build();
     }
+
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id) { productoService.deleteById(id); }
+    public ResponseEntity<?> delete(@PathVariable Integer id) {
+        Optional<Producto> productoOptional = productoService.deleteById(id);
+        if (productoOptional.isPresent()) {
+            return ResponseEntity.ok(productoOptional.orElseThrow());
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

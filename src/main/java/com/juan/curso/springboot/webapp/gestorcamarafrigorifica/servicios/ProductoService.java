@@ -1,5 +1,6 @@
 package com.juan.curso.springboot.webapp.gestorcamarafrigorifica.servicios;
 
+import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.Cliente;
 import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.Producto;
 
 import java.util.List;
@@ -12,5 +13,7 @@ public interface ProductoService {
 
     Producto save(Producto producto);
 
-    void deleteById(Integer id);
+    Optional<Producto> update(Integer id, Producto producto);
+
+    Optional<Producto> deleteById(Integer id);
 }

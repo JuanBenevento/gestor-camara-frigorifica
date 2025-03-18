@@ -2,6 +2,7 @@ package com.juan.curso.springboot.webapp.gestorcamarafrigorifica.controladores;
 
 import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.Camara;
 import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.servicios.CamaraService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,15 +32,25 @@ public class CamaraController {
     }
 
     @PostMapping
-    public ResponseEntity<Camara> create(@RequestBody Camara camara) {
+    public ResponseEntity<Camara> create(@Valid @RequestBody Camara camara) {
         return ResponseEntity.status(HttpStatus.CREATED).body(camaraService.save(camara));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Camara> update(@PathVariable Integer id, @RequestBody Camara camara) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(camaraService.save(camara));
+    public ResponseEntity<Camara> update(@PathVariable Integer id,@Valid @RequestBody Camara camara) {
+        Optional<Camara> camaraOptional = camaraService.update(id, camara);
+        if (camaraOptional.isPresent()) {
+           return ResponseEntity.status(HttpStatus.OK).body(camaraOptional.orElseThrow());
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id) { camaraService.deleteById(id); }
+    public ResponseEntity<?> delete(@PathVariable Integer id) {
+        Optional<Camara> camaraOptional = camaraService.deleteById(id);
+        if (camaraOptional.isPresent()) {
+            return ResponseEntity.ok(camaraOptional.orElseThrow());
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

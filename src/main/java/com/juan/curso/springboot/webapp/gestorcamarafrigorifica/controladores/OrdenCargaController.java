@@ -2,6 +2,7 @@ package com.juan.curso.springboot.webapp.gestorcamarafrigorifica.controladores;
 
 import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.OrdenCarga;
 import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.servicios.OrdenCargaServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,10 +35,20 @@ public class OrdenCargaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OrdenCarga> update(@PathVariable Integer id, @RequestBody OrdenCarga ordenCarga) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(ordenCargaService.save(ordenCarga));
+    public ResponseEntity<OrdenCarga> update(@PathVariable Integer id, @Valid @RequestBody OrdenCarga ordenCarga) {
+        Optional<OrdenCarga> ordenCargaOptional = ordenCargaService.update(id, ordenCarga);
+        if (ordenCargaOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(ordenCargaOptional.orElseThrow());
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id) { ordenCargaService.deleteById(id); }
+    public ResponseEntity<?> delete(@PathVariable Integer id) {
+        Optional<OrdenCarga> ordenCargaOptional = ordenCargaService.deleteById(id);
+        if (ordenCargaOptional.isPresent()) {
+            return ResponseEntity.ok(ordenCargaOptional.orElseThrow());
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

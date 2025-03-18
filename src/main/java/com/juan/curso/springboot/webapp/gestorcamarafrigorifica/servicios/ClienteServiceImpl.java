@@ -32,9 +32,26 @@ public class ClienteServiceImpl implements ClienteService {
         return clienteRepository.save(cliente);
     }
 
+    @Override
+    public Optional<Cliente> update(Integer id, Cliente cliente) {
+        Optional<Cliente> clienteOptional = clienteRepository.findById(id);
+        if (clienteOptional.isPresent()) {
+            Cliente clienteDb = clienteOptional.orElseThrow();
+            clienteDb.setNombre(cliente.getNombre());
+            clienteDb.setContacto(cliente.getContacto());
+            clienteDb.setCondicionesFacturacion(cliente.getCondicionesFacturacion());
+            return Optional.of(clienteRepository.save(clienteDb));
+        }
+        return clienteOptional;
+    }
+
     @Transactional
     @Override
-    public void deleteById(Integer id) {
-        clienteRepository.deleteById(id);
+    public Optional<Cliente> deleteById(Integer id) {
+        Optional<Cliente> clienteOptional = clienteRepository.findById(id);
+        clienteOptional.ifPresent(clienteDb -> {
+            clienteRepository.delete(clienteDb);
+        });
+        return clienteOptional;
     }
 }

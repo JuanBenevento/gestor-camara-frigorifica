@@ -33,9 +33,27 @@ public class CamaraServiceImpl implements CamaraService{
         return camaraRepository.save(camara);
     }
 
+    @Override
+    public Optional<Camara> update(Integer id, Camara camara) {
+        Optional<Camara> camaraOptional = camaraRepository.findById(id);
+        if (camaraOptional.isPresent()) {
+            Camara camaraDb = camaraOptional.orElseThrow();
+            camaraDb.setNombre(camara.getNombre());
+            camaraDb.setTemperatura(camara.getTemperatura());
+            camaraDb.setCapacidad(camara.getCapacidad());
+            camaraDb.setUbicacion(camara.getUbicacion());
+            return Optional.of(camaraRepository.save(camaraDb));
+        }
+        return camaraOptional;
+    }
+
     @Transactional
     @Override
-    public void deleteById(Integer id) {
-        camaraRepository.deleteById(id);
+    public Optional<Camara> deleteById(Integer id) {
+        Optional<Camara> camaraOptional = camaraRepository.findById(id);
+        camaraOptional.ifPresent(camaraDb -> {
+            camaraRepository.delete(camaraDb);
+        });
+        return camaraOptional;
     }
 }
