@@ -6,9 +6,12 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -23,17 +26,39 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> getById(@PathVariable Integer id) {
+    public ResponseEntity<?> getById(@Valid @PathVariable Integer id) {
         Optional<Usuario> usuario = usuarioService.findById(id);
+
         if (usuario.isPresent()) {
             return ResponseEntity.ok(usuario.orElseThrow());
         }
+
         return ResponseEntity.notFound().build();
     }
 
     @PostMapping
-    public ResponseEntity<Usuario> create(@RequestBody Usuario usuario) {
+    public ResponseEntity<?> create(@Valid @RequestBody Usuario usuario, BindingResult result) {
+        if(result.hasFieldErrors()){
+            return validation(result);
+        }
+
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.save(usuario));
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@Valid @RequestBody Usuario usuario, BindingResult result) {
+        usuario.setAdmin(false);
+        return create(usuario, result);
+    }
+
+    private ResponseEntity<?> validation(BindingResult result) {
+        Map<String, String> errors = new HashMap<>();
+
+        result.getFieldErrors().forEach(error -> {
+            errors.put(error.getField(), "El campo " + error.getField() + " " + error.getDefaultMessage());
+        });
+
+        return ResponseEntity.badRequest().body(errors);
     }
 
     @PutMapping("/{id}")

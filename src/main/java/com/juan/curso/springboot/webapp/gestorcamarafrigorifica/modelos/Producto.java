@@ -1,6 +1,5 @@
 package com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 

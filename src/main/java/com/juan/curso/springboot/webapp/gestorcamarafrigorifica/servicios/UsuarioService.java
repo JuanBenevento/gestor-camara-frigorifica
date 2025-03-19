@@ -1,6 +1,5 @@
 package com.juan.curso.springboot.webapp.gestorcamarafrigorifica.servicios;
 
-import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.Cliente;
 import com.juan.curso.springboot.webapp.gestorcamarafrigorifica.modelos.Usuario;
 
 import java.util.List;
@@ -16,4 +15,6 @@ public interface UsuarioService {
     Optional<Usuario> update(Integer id, Usuario usuario);
 
     Optional<Usuario> deleteById(Integer id);
+
+    boolean existsByUsername(String nombre);
 }
